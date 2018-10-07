@@ -7,7 +7,7 @@ import {
   bleedAttack
 } from './combat.js';
 import { logAttackResults } from './log.js';
-import { removeExpiredEffects, applyNewEffects } from './statusEffects.js';
+import { resolveStatusEffects } from './statusEffects.js';
 
 function initGame() {
   const defaultGameState = {
@@ -62,19 +62,19 @@ function onbleedAttackClicked() {
   enemyTurn();
 }
 
-function resolveStatusEffects(entity) {
+function statusEffectPhase(entity) {
   const gameState = state.getState();
+  const gameTurn = gameState.gameTurn;
 
   if (!gameState[entity].statusEffects.length > 0) {
     console.log(`${entity} has no effects...`);
   } else {
     console.log(`${entity} has some effects...`);
-    gameState[entity].statusEffects = removeExpiredEffects(
-      gameState[entity],
-      gameState.gameTurn
+    const updatedEntity = resolveStatusEffects(
+      { ...gameState[entity] },
+      gameTurn
     );
-    // TODO: Implement last effects method
-    applyNewEffects(gameState[entity]);
+    gameState[entity] = updatedEntity;
     state.setState(gameState);
   }
 }
@@ -90,14 +90,15 @@ function enemyTurn() {
 
 function endGameTurn() {
   console.log('Game Turn end...');
-  const gameState = state.getState();
+  let gameState = state.getState();
   gameState.gameTurn++;
   state.setState(gameState);
+  statusEffectPhase('knight');
+  statusEffectPhase('skeleton');
+  gameState = state.getState();
   console.log('Game Turn', gameState.gameTurn);
   console.log('Player', gameState.knight.health);
   console.log('Enemy', gameState.skeleton.health);
-  resolveStatusEffects('knight');
-  resolveStatusEffects('skeleton');
 }
 
 export {

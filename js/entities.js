@@ -7,7 +7,8 @@ const knight = {
   attack: 1,
   defense: 1,
   weapon: equipment.axe,
-  armor: 1
+  armor: 1,
+  statusEffects: []
 };
 
 const skeleton = {
@@ -17,7 +18,8 @@ const skeleton = {
   attack: 1,
   defense: 1,
   weapon: equipment.sword,
-  armor: 1
+  armor: 1,
+  statusEffects: []
 };
 
 export { knight, skeleton };

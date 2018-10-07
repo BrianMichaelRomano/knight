@@ -21,11 +21,5 @@ function removeExpiredEffects(entity, gameTurn) {
   return effectsRemaining;
 }
 function applyNewEffects(entity) {}
-function incrementExistingEffects(entity) {}
 
-export {
-  bleedEffectInit,
-  removeExpiredEffects,
-  applyNewEffects,
-  incrementExistingEffects
-};
+export { bleedEffectInit, removeExpiredEffects, applyNewEffects };

@@ -7,11 +7,7 @@ import {
   bleedAttack
 } from './combat.js';
 import { logAttackResults } from './log.js';
-import {
-  removeExpiredEffects,
-  applyNewEffects,
-  incrementExistingEffects
-} from './statusEffects.js';
+import { removeExpiredEffects, applyNewEffects } from './statusEffects.js';
 
 function initGame() {
   const defaultGameState = {
@@ -77,9 +73,8 @@ function resolveStatusEffects(entity) {
       gameState[entity],
       gameState.gameTurn
     );
-    // TODO: Implement last effects methods
+    // TODO: Implement last effects method
     applyNewEffects(gameState[entity]);
-    incrementExistingEffects(gameState[entity]);
     state.setState(gameState);
   }
 }

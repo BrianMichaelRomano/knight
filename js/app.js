@@ -2,7 +2,8 @@ import {
   initGame,
   onBasicAttackClicked,
   onFeignAttackClicked,
-  onExploitArmorAttackClicked
+  onExploitArmorAttackClicked,
+  onbleedAttackClicked
 } from './game.js';
 
 initGame();
@@ -18,3 +19,7 @@ document
 document
   .querySelector('#exploitArmorAttack')
   .addEventListener('click', onExploitArmorAttackClicked);
+
+document
+  .querySelector('#bleedAttack')
+  .addEventListener('click', onbleedAttackClicked);

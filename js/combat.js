@@ -1,4 +1,6 @@
 import { rollOff, diceRoll } from './dice.js';
+import { divideBy, multiplyBy } from './utils.js';
+import { bleedEffectInit } from './statusEffects.js';
 
 function basicAttack(attacker, defender) {
   const attackDidHit = attackRoll(attacker, defender);
@@ -28,7 +30,7 @@ function feignAttack(attacker, defender) {
 
   if (attackDidHit) {
     damage = damageRoll(attacker, defender);
-    damage = multiply(damage, 2);
+    damage = multiplyBy(damage, 2);
     if (damage > 0) {
       applyDamage(defender, damage);
     }
@@ -51,7 +53,7 @@ function exploitArmorAttack(attacker, defender) {
 
   if (attackDidHit) {
     damage = damageRoll(attacker, defender, true);
-    damage = multiply(damage, 2);
+    damage = multiplyBy(damage, 2);
     if (damage > 0) {
       applyDamage(defender, damage);
     }
@@ -66,8 +68,33 @@ function exploitArmorAttack(attacker, defender) {
   };
 }
 
-function multiply(value, multiplier) {
-  return value * multiplier;
+function bleedAttack(attacker, defender, gameTurn) {
+  const attackDidHit = attackRoll(attacker, defender);
+  let damage = null;
+
+  if (attackDidHit) {
+    let divisor = 2;
+    let duration = 3;
+
+    damage = damageRoll(attacker, defender);
+    damage = divideBy(damage, divisor);
+
+    if (damage > 0) {
+      applyDamage(defender, damage);
+    }
+
+    defender.statusEffects.push(
+      bleedEffectInit(duration, damage, defender, gameTurn)
+    );
+  }
+
+  return {
+    attackDidHit,
+    attacker,
+    defender,
+    damage,
+    attackType: 'Bleed Attack'
+  };
 }
 
 function attackRoll(attacker, defender) {
@@ -92,4 +119,4 @@ function applyDamage(defender, damage) {
   defender.health -= damage;
 }
 
-export { basicAttack, feignAttack, exploitArmorAttack };
+export { basicAttack, feignAttack, exploitArmorAttack, bleedAttack };

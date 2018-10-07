@@ -9,17 +9,26 @@ import {
 import { logAttackResults } from './log.js';
 import { resolveStatusEffects } from './statusEffects.js';
 
-function initGame() {
+function initGame(reset) {
   const defaultGameState = {
     knight,
     skeleton,
     gameTurn: 0
   };
 
+  if (reset) {
+    state.setState(defaultGameState);
+    console.log('New Game Initialized...');
+  }
+
   if (!state.getState()) {
     state.setState(defaultGameState);
     console.log('New Game Initialized...');
   }
+}
+
+function onResetGameClicked() {
+  initGame(true);
 }
 
 function onBasicAttackClicked() {
@@ -106,5 +115,6 @@ export {
   onBasicAttackClicked,
   onFeignAttackClicked,
   onExploitArmorAttackClicked,
-  onbleedAttackClicked
+  onbleedAttackClicked,
+  onResetGameClicked
 };

@@ -77,6 +77,7 @@ function resolveStatusEffects(entity) {
       gameState[entity],
       gameState.gameTurn
     );
+    // TODO: Implement last effects methods
     applyNewEffects(gameState[entity]);
     incrementExistingEffects(gameState[entity]);
     state.setState(gameState);

@@ -16,7 +16,7 @@ function removeExpiredEffects(entity, gameTurn) {
   const effects = [...entity.statusEffects];
 
   const effectsRemaining = effects.filter(effect => {
-    return !(effect.duration + effect.gameTurn < gameTurn);
+    return effect.duration + effect.gameTurn >= gameTurn;
   });
   return effectsRemaining;
 }

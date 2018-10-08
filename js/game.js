@@ -11,8 +11,8 @@ import { resolveStatusEffects } from './statusEffects.js';
 
 function initGame(reset) {
   const defaultGameState = {
-    knight,
-    skeleton,
+    knight: knight,
+    enemy: skeleton,
     gameTurn: 0
   };
 
@@ -34,7 +34,7 @@ function onResetGameClicked() {
 function onBasicAttackClicked() {
   console.log('Player Turn...');
   const gameState = state.getState();
-  let attackResults = basicAttack(gameState.knight, gameState.skeleton);
+  let attackResults = basicAttack(gameState.knight, gameState.enemy);
   state.setState(gameState);
   logAttackResults(attackResults);
   enemyTurn();
@@ -43,7 +43,7 @@ function onBasicAttackClicked() {
 function onFeignAttackClicked() {
   console.log('Player Turn...');
   const gameState = state.getState();
-  let attackResults = feignAttack(gameState.knight, gameState.skeleton);
+  let attackResults = feignAttack(gameState.knight, gameState.enemy);
   state.setState(gameState);
   logAttackResults(attackResults);
   enemyTurn();
@@ -52,7 +52,7 @@ function onFeignAttackClicked() {
 function onExploitArmorAttackClicked() {
   console.log('Player Turn...');
   const gameState = state.getState();
-  let attackResults = exploitArmorAttack(gameState.knight, gameState.skeleton);
+  let attackResults = exploitArmorAttack(gameState.knight, gameState.enemy);
   state.setState(gameState);
   logAttackResults(attackResults);
   enemyTurn();
@@ -63,7 +63,7 @@ function onbleedAttackClicked() {
   const gameState = state.getState();
   let attackResults = bleedAttack(
     gameState.knight,
-    gameState.skeleton,
+    gameState.enemy,
     gameState.gameTurn
   );
   state.setState(gameState);
@@ -91,7 +91,7 @@ function statusEffectPhase(entity) {
 function enemyTurn() {
   console.log('Enemy Turn...');
   const gameState = state.getState();
-  let attackResults = basicAttack(gameState.skeleton, gameState.knight);
+  let attackResults = basicAttack(gameState.enemy, gameState.knight);
   state.setState(gameState);
   logAttackResults(attackResults);
   endGameTurn();
@@ -103,11 +103,11 @@ function endGameTurn() {
   gameState.gameTurn++;
   state.setState(gameState);
   statusEffectPhase('knight');
-  statusEffectPhase('skeleton');
+  statusEffectPhase('enemy');
   gameState = state.getState();
   console.log('Game Turn', gameState.gameTurn);
-  console.log('Player', gameState.knight.health);
-  console.log('Enemy', gameState.skeleton.health);
+  console.log('Knight', gameState.knight.health);
+  console.log('Enemy', gameState.enemy.health);
 }
 
 export {

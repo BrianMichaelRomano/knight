@@ -75,10 +75,7 @@ function statusEffectPhase(entity) {
   const gameState = state.getState();
   const gameTurn = gameState.gameTurn;
 
-  if (!gameState[entity].statusEffects.length > 0) {
-    console.log(`${entity} has no effects...`);
-  } else {
-    console.log(`${entity} has some effects...`);
+  if (gameState[entity].statusEffects.length > 0) {
     const updatedEntity = resolveStatusEffects(
       { ...gameState[entity] },
       gameTurn

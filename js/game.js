@@ -106,8 +106,8 @@ function endGameTurn() {
   statusEffectPhase('enemy');
   gameState = state.getState();
   console.log('Game Turn', gameState.gameTurn);
-  console.log('Knight', gameState.knight.health);
-  console.log('Enemy', gameState.enemy.health);
+  console.log(gameState.knight.name, gameState.knight.health);
+  console.log(gameState.enemy.name, gameState.enemy.health);
 }
 
 export {

@@ -16,4 +16,10 @@ const axe = {
   maxDamage: 8
 };
 
-export default { sword, mace, axe };
+const unarmed = {
+  name: 'Unarmed',
+  minDamage: 1,
+  maxDamage: 3
+};
+
+export default { sword, mace, axe, unarmed };

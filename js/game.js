@@ -1,4 +1,4 @@
-import { skeleton, knight } from './entities.js';
+import { skeleton, knight, rat } from './entities.js';
 import state from './state.js';
 import {
   basicAttack,
@@ -12,7 +12,7 @@ import { resolveStatusEffects } from './statusEffects.js';
 function initGame(reset) {
   const defaultGameState = {
     knight: knight,
-    enemy: skeleton,
+    enemy: rat,
     gameTurn: 0
   };
 

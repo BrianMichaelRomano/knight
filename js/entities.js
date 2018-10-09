@@ -22,4 +22,15 @@ const skeleton = {
   statusEffects: []
 };
 
-export { knight, skeleton };
+const rat = {
+  name: 'Rat',
+  id: 'rat',
+  health: 10,
+  attack: 1,
+  defense: 1,
+  weapon: equipment.unarmed,
+  armor: 0,
+  statusEffects: []
+};
+
+export { knight, skeleton, rat };

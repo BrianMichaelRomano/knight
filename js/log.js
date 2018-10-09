@@ -1,4 +1,4 @@
-function logAttackResults(attackResults) {
+function logActionResults(attackResults) {
   if (attackResults.attackDidHit) {
     console.log(
       `${attackResults.attacker.name} made a ${attackResults.attackType} on ${
@@ -16,4 +16,4 @@ function logAttackResults(attackResults) {
   }
 }
 
-export { logAttackResults };
+export { logActionResults };

@@ -1,12 +1,7 @@
 import { skeleton, knight, rat } from './entities.js';
 import state from './state.js';
-import {
-  basicAttack,
-  feignAttack,
-  exploitArmorAttack,
-  bleedAttack
-} from './combat.js';
-import { logAttackResults } from './log.js';
+import actions from './actions.js';
+import { logActionResults } from './log.js';
 import { resolveStatusEffects } from './statusEffects.js';
 
 function initGame(reset) {
@@ -31,44 +26,20 @@ function onResetGameClicked() {
   initGame(true);
 }
 
-function onBasicAttackClicked() {
-  console.log('Player Turn...');
-  const gameState = state.getState();
-  let attackResults = basicAttack(gameState.knight, gameState.enemy);
-  state.setState(gameState);
-  logAttackResults(attackResults);
-  enemyTurn();
-}
-
-function onFeignAttackClicked() {
-  console.log('Player Turn...');
-  const gameState = state.getState();
-  let attackResults = feignAttack(gameState.knight, gameState.enemy);
-  state.setState(gameState);
-  logAttackResults(attackResults);
-  enemyTurn();
-}
-
-function onExploitArmorAttackClicked() {
-  console.log('Player Turn...');
-  const gameState = state.getState();
-  let attackResults = exploitArmorAttack(gameState.knight, gameState.enemy);
-  state.setState(gameState);
-  logAttackResults(attackResults);
-  enemyTurn();
-}
-
-function onbleedAttackClicked() {
-  console.log('Player Turn...');
-  const gameState = state.getState();
-  let attackResults = bleedAttack(
-    gameState.knight,
-    gameState.enemy,
-    gameState.gameTurn
-  );
-  state.setState(gameState);
-  logAttackResults(attackResults);
-  enemyTurn();
+function onActionBtnClicked(e) {
+  const action = e.target.dataset.id;
+  if (actions[action]) {
+    console.log('Player Turn...');
+    const gameState = state.getState();
+    let actionResults = actions[action](
+      gameState.knight,
+      gameState.enemy,
+      gameState.gameTurn
+    );
+    state.setState(gameState);
+    logActionResults(actionResults);
+    enemyTurn();
+  }
 }
 
 function statusEffectPhase(entity) {
@@ -88,9 +59,9 @@ function statusEffectPhase(entity) {
 function enemyTurn() {
   console.log('Enemy Turn...');
   const gameState = state.getState();
-  let attackResults = basicAttack(gameState.enemy, gameState.knight);
+  let actionResults = actions.basicAttack(gameState.enemy, gameState.knight);
   state.setState(gameState);
-  logAttackResults(attackResults);
+  logActionResults(actionResults);
   endGameTurn();
 }
 
@@ -107,11 +78,4 @@ function endGameTurn() {
   console.log(gameState.enemy.name, gameState.enemy.health);
 }
 
-export {
-  initGame,
-  onBasicAttackClicked,
-  onFeignAttackClicked,
-  onExploitArmorAttackClicked,
-  onbleedAttackClicked,
-  onResetGameClicked
-};
+export { initGame, onResetGameClicked, onActionBtnClicked };

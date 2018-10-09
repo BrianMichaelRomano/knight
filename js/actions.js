@@ -119,4 +119,4 @@ function applyDamage(defender, damage) {
   defender.health -= damage;
 }
 
-export { basicAttack, feignAttack, exploitArmorAttack, bleedAttack };
+export default { basicAttack, feignAttack, exploitArmorAttack, bleedAttack };

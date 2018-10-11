@@ -36,7 +36,7 @@ function resolveStatusEffects(entity, gameTurn) {
 
 function markExpiredEffects(effects, gameTurn) {
   effects.forEach(effect => {
-    if (effect.gameTurn + effect.duration <= gameTurn) {
+    if (effect.gameTurn + effect.duration < gameTurn) {
       effect.hasExpired = true;
     }
   });

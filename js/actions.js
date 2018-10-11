@@ -87,7 +87,7 @@ function bleedAttack(attacker, defender, gameState) {
 
   if (attackDidHit) {
     let divisor = 2;
-    let duration = 3;
+    let duration = 2;
 
     damage = damageRoll(attackerObj, defenderObj);
     damage = divideBy(damage, divisor);

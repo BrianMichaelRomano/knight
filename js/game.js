@@ -29,11 +29,10 @@ function onResetGameClicked() {
 function onActionBtnClicked(e) {
   const action = e.target.dataset.id;
   if (actions[action]) {
-    console.log('Player Turn...');
-    const gameState = state.getState();
-    let actionResults = actions[action]('knight', 'enemy', { ...gameState });
-    state.setState(actionResults.gameState);
-    logActionResults(actionResults);
+    const actionPhase = actions[action];
+
+    actionPhase('knight', 'enemy');
+    statusEffectPhase('knight');
     enemyTurn();
   }
 }
@@ -54,20 +53,17 @@ function statusEffectPhase(entity) {
 
 function enemyTurn() {
   console.log('Enemy Turn...');
-  const gameState = state.getState();
-  let actionResults = actions.basicAttack('enemy', 'knight', { ...gameState });
-  state.setState(gameState);
-  logActionResults(actionResults);
+  const actionPhase = actions.basicAttack;
+
+  actionPhase('enemy', 'knight');
+  statusEffectPhase('enemy');
   endGameTurn();
 }
 
 function endGameTurn() {
-  console.log('Game Turn end...');
   let gameState = state.getState();
   gameState.gameTurn++;
   state.setState(gameState);
-  statusEffectPhase('knight');
-  statusEffectPhase('enemy');
   gameState = state.getState();
   console.log('Game Turn', gameState.gameTurn);
   console.log(gameState.knight.name, gameState.knight.health);

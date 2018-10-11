@@ -1,8 +1,11 @@
 import { rollOff, diceRoll } from './dice.js';
 import { divideBy, multiplyBy } from './utils.js';
 import { bleedEffectInit } from './statusEffects.js';
+import state from './state.js';
+import { logActionResults } from './log.js';
 
-function basicAttack(attacker, defender, gameState) {
+function basicAttack(attacker, defender) {
+  const gameState = state.getState();
   const attackerObj = gameState[attacker];
   const defenderObj = gameState[defender];
   const attackDidHit = attackRoll(attackerObj, defenderObj);
@@ -15,17 +18,20 @@ function basicAttack(attacker, defender, gameState) {
     }
   }
 
-  return {
-    gameState,
+  const actionResults = {
     attackDidHit,
     attacker: attackerObj,
     defender: defenderObj,
     damage,
     attackType: 'Basic Attack'
   };
+
+  logActionResults(actionResults);
+  state.setState(gameState);
 }
 
-function feignAttack(attacker, defender, gameState) {
+function feignAttack(attacker, defender) {
+  const gameState = state.getState();
   const attackerObj = gameState[attacker];
   const defenderObj = gameState[defender];
   const attack1DidHit = attackRoll(attackerObj, defenderObj);
@@ -41,17 +47,20 @@ function feignAttack(attacker, defender, gameState) {
     }
   }
 
-  return {
-    gameState,
+  const actionResults = {
     attackDidHit,
     attacker: attackerObj,
     defender: defenderObj,
     damage,
     attackType: 'Feign Attack'
   };
+
+  logActionResults(actionResults);
+  state.setState(gameState);
 }
 
-function exploitArmorAttack(attacker, defender, gameState) {
+function exploitArmorAttack(attacker, defender) {
+  const gameState = state.getState();
   let attackerObj = gameState[attacker];
   let defenderObj = gameState[defender];
 
@@ -68,17 +77,20 @@ function exploitArmorAttack(attacker, defender, gameState) {
     }
   }
 
-  return {
-    gameState,
+  const actionResults = {
     attackDidHit,
     attacker: attackerObj,
     defender: defenderObj,
     damage,
-    attackType: 'Exploit Armor Attack'
+    attackType: 'Exloit Armor Attack'
   };
+
+  logActionResults(actionResults);
+  state.setState(gameState);
 }
 
-function bleedAttack(attacker, defender, gameState) {
+function bleedAttack(attacker, defender) {
+  const gameState = state.getState();
   const gameTurn = gameState.gameTurn;
   const attackerObj = gameState[attacker];
   const defenderObj = gameState[defender];
@@ -101,14 +113,16 @@ function bleedAttack(attacker, defender, gameState) {
     );
   }
 
-  return {
-    gameState,
+  const actionResults = {
     attackDidHit,
     attacker: attackerObj,
     defender: defenderObj,
     damage,
     attackType: 'Bleed Attack'
   };
+
+  logActionResults(actionResults);
+  state.setState(gameState);
 }
 
 function attackRoll(attacker, defender) {

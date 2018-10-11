@@ -6,6 +6,8 @@ const knight = {
   health: 100,
   attack: 1,
   defense: 1,
+  fatigueLimit: 10,
+  currentFatigue: 0,
   weapon: equipment.axe,
   armor: 1,
   statusEffects: []
@@ -17,6 +19,8 @@ const skeleton = {
   health: 100,
   attack: 1,
   defense: 1,
+  fatigueLimit: 5,
+  currentFatigue: 0,
   weapon: equipment.sword,
   armor: 1,
   statusEffects: []
@@ -28,6 +32,8 @@ const rat = {
   health: 10,
   attack: 1,
   defense: 1,
+  fatigueLimit: 2,
+  currentFatigue: 0,
   weapon: equipment.unarmed,
   armor: 0,
   statusEffects: []

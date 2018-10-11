@@ -31,12 +31,8 @@ function onActionBtnClicked(e) {
   if (actions[action]) {
     console.log('Player Turn...');
     const gameState = state.getState();
-    let actionResults = actions[action](
-      gameState.knight,
-      gameState.enemy,
-      gameState.gameTurn
-    );
-    state.setState(gameState);
+    let actionResults = actions[action]('knight', 'enemy', { ...gameState });
+    state.setState(actionResults.gameState);
     logActionResults(actionResults);
     enemyTurn();
   }
@@ -59,7 +55,7 @@ function statusEffectPhase(entity) {
 function enemyTurn() {
   console.log('Enemy Turn...');
   const gameState = state.getState();
-  let actionResults = actions.basicAttack(gameState.enemy, gameState.knight);
+  let actionResults = actions.basicAttack('enemy', 'knight', { ...gameState });
   state.setState(gameState);
   logActionResults(actionResults);
   endGameTurn();

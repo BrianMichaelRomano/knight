@@ -2,96 +2,110 @@ import { rollOff, diceRoll } from './dice.js';
 import { divideBy, multiplyBy } from './utils.js';
 import { bleedEffectInit } from './statusEffects.js';
 
-function basicAttack(attacker, defender) {
-  const attackDidHit = attackRoll(attacker, defender);
+function basicAttack(attacker, defender, gameState) {
+  const attackerObj = gameState[attacker];
+  const defenderObj = gameState[defender];
+  const attackDidHit = attackRoll(attackerObj, defenderObj);
   let damage = null;
 
   if (attackDidHit) {
-    damage = damageRoll(attacker, defender);
+    damage = damageRoll(attackerObj, defenderObj);
     if (damage > 0) {
-      applyDamage(defender, damage);
+      defenderObj.health = applyDamage(defenderObj, damage);
     }
   }
 
   return {
+    gameState,
     attackDidHit,
-    attacker,
-    defender,
+    attacker: attackerObj,
+    defender: defenderObj,
     damage,
     attackType: 'Basic Attack'
   };
 }
 
-function feignAttack(attacker, defender) {
-  const attack1DidHit = attackRoll(attacker, defender);
-  const attack2DidHit = attackRoll(attacker, defender);
+function feignAttack(attacker, defender, gameState) {
+  const attackerObj = gameState[attacker];
+  const defenderObj = gameState[defender];
+  const attack1DidHit = attackRoll(attackerObj, defenderObj);
+  const attack2DidHit = attackRoll(attackerObj, defenderObj);
   const attackDidHit = attack1DidHit && attack2DidHit;
   let damage = null;
 
   if (attackDidHit) {
-    damage = damageRoll(attacker, defender);
+    damage = damageRoll(attackerObj, defenderObj);
     damage = multiplyBy(damage, 2);
     if (damage > 0) {
-      applyDamage(defender, damage);
+      defenderObj.health = applyDamage(defenderObj, damage);
     }
   }
 
   return {
+    gameState,
     attackDidHit,
-    attacker,
-    defender,
+    attacker: attackerObj,
+    defender: defenderObj,
     damage,
     attackType: 'Feign Attack'
   };
 }
 
-function exploitArmorAttack(attacker, defender) {
-  const attack1DidHit = attackRoll(attacker, defender);
-  const attack2DidHit = attackRoll(attacker, defender);
+function exploitArmorAttack(attacker, defender, gameState) {
+  let attackerObj = gameState[attacker];
+  let defenderObj = gameState[defender];
+
+  const attack1DidHit = attackRoll(attackerObj, defenderObj);
+  const attack2DidHit = attackRoll(attackerObj, defenderObj);
   const attackDidHit = attack1DidHit && attack2DidHit;
   let damage = null;
 
   if (attackDidHit) {
-    damage = damageRoll(attacker, defender, true);
+    damage = damageRoll(attackerObj, defenderObj, true);
     damage = multiplyBy(damage, 2);
     if (damage > 0) {
-      applyDamage(defender, damage);
+      defenderObj.health = applyDamage(defenderObj, damage);
     }
   }
 
   return {
+    gameState,
     attackDidHit,
-    attacker,
-    defender,
+    attacker: attackerObj,
+    defender: defenderObj,
     damage,
     attackType: 'Exploit Armor Attack'
   };
 }
 
-function bleedAttack(attacker, defender, gameTurn) {
-  const attackDidHit = attackRoll(attacker, defender);
+function bleedAttack(attacker, defender, gameState) {
+  const gameTurn = gameState.gameTurn;
+  const attackerObj = gameState[attacker];
+  const defenderObj = gameState[defender];
+  const attackDidHit = attackRoll(attackerObj, defenderObj);
   let damage = null;
 
   if (attackDidHit) {
     let divisor = 2;
     let duration = 3;
 
-    damage = damageRoll(attacker, defender);
+    damage = damageRoll(attackerObj, defenderObj);
     damage = divideBy(damage, divisor);
 
     if (damage > 0) {
-      applyDamage(defender, damage);
+      defenderObj.health = applyDamage(defenderObj, damage);
     }
 
-    defender.statusEffects.push(
-      bleedEffectInit(duration, damage, defender, gameTurn)
+    defenderObj.statusEffects.push(
+      bleedEffectInit(duration, damage, defenderObj, gameTurn)
     );
   }
 
   return {
+    gameState,
     attackDidHit,
-    attacker,
-    defender,
+    attacker: attackerObj,
+    defender: defenderObj,
     damage,
     attackType: 'Bleed Attack'
   };
@@ -116,7 +130,7 @@ function damageRoll(attacker, defender, ignoreArmor) {
 }
 
 function applyDamage(defender, damage) {
-  defender.health -= damage;
+  return defender.health - damage;
 }
 
 export default { basicAttack, feignAttack, exploitArmorAttack, bleedAttack };

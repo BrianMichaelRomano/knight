@@ -23,7 +23,8 @@ const skeleton = {
   currentFatigue: 0,
   weapon: equipment.sword,
   armor: 1,
-  statusEffects: []
+  statusEffects: [],
+  actionsAvailable: ['basicAttack', 'bleedAttack', 'exploitArmorAttack']
 };
 
 const rat = {
@@ -36,7 +37,8 @@ const rat = {
   currentFatigue: 0,
   weapon: equipment.unarmed,
   armor: 0,
-  statusEffects: []
+  statusEffects: [],
+  actionsAvailable: ['basicAttack', 'bleedAttack']
 };
 
 export { knight, skeleton, rat };

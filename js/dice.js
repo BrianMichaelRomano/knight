@@ -34,4 +34,4 @@ function rollOff(attr1, attr2) {
   return attr1Result >= attr2Result ? true : false;
 }
 
-export { rollOff, diceRoll };
+export { rollOff, diceRoll, randomNumber };

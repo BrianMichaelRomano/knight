@@ -1,13 +1,12 @@
 import { skeleton, knight, rat } from './entities.js';
 import state from './state.js';
 import actions from './actions.js';
-import { logActionResults } from './log.js';
 import { resolveStatusEffects } from './statusEffects.js';
 
 function initGame(reset) {
   const defaultGameState = {
     knight: knight,
-    enemy: rat,
+    enemy: skeleton,
     gameTurn: 0
   };
 
@@ -53,9 +52,8 @@ function statusEffectPhase(entity) {
 
 function enemyTurn() {
   console.log('Enemy Turn...');
-  const enemyActionPhase = actions.basicAttack;
 
-  enemyActionPhase('enemy', 'knight');
+  actions.enemyActionPhase('enemy', 'knight');
   statusEffectPhase('enemy');
   endGameTurn();
 }

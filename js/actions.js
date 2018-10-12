@@ -1,4 +1,4 @@
-import { rollOff, diceRoll } from './dice.js';
+import { rollOff, diceRoll, randomNumber } from './dice.js';
 import { divideBy, multiplyBy } from './utils.js';
 import { bleedEffectInit } from './statusEffects.js';
 import state from './state.js';
@@ -147,4 +147,19 @@ function applyDamage(defender, damage) {
   return defender.health - damage;
 }
 
-export default { basicAttack, feignAttack, exploitArmorAttack, bleedAttack };
+function enemyActionPhase(attacker, defender) {
+  const enemy = state.getState().enemy;
+
+  const randomNum = randomNumber(0, enemy.actionsAvailable.length - 1);
+  actions[enemy.actionsAvailable[randomNum]](attacker, defender);
+}
+
+const actions = {
+  basicAttack,
+  feignAttack,
+  exploitArmorAttack,
+  bleedAttack,
+  enemyActionPhase
+};
+
+export default actions;

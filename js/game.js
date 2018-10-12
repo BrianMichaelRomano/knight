@@ -29,9 +29,9 @@ function onResetGameClicked() {
 function onActionBtnClicked(e) {
   const action = e.target.dataset.id;
   if (actions[action]) {
-    const actionPhase = actions[action];
+    const playerActionPhase = actions[action];
 
-    actionPhase('knight', 'enemy');
+    playerActionPhase('knight', 'enemy');
     statusEffectPhase('knight');
     enemyTurn();
   }
@@ -53,9 +53,9 @@ function statusEffectPhase(entity) {
 
 function enemyTurn() {
   console.log('Enemy Turn...');
-  const actionPhase = actions.basicAttack;
+  const enemyActionPhase = actions.basicAttack;
 
-  actionPhase('enemy', 'knight');
+  enemyActionPhase('enemy', 'knight');
   statusEffectPhase('enemy');
   endGameTurn();
 }

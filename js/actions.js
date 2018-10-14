@@ -148,9 +148,14 @@ function applyDamage(defender, damage) {
 }
 
 function enemyActionPhase(attacker, defender) {
-  const enemy = state.getState().enemy;
+  randomEnemyAction(attacker, defender);
+}
 
-  const randomNum = randomNumber(0, enemy.actionsAvailable.length - 1);
+function randomEnemyAction(attacker, defender) {
+  const enemy = state.getState().enemy;
+  const numEnemyActions = enemy.actionsAvailable.length - 1;
+
+  const randomNum = randomNumber(0, numEnemyActions);
   actions[enemy.actionsAvailable[randomNum]](attacker, defender);
 }
 

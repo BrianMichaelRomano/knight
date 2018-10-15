@@ -9,21 +9,32 @@ function basicAttack(attacker, defender) {
   const attackerObj = gameState[attacker];
   const defenderObj = gameState[defender];
   const attackDidHit = attackRoll(attackerObj, defenderObj);
+  const fatigueCost = 0;
+  const fatigueLost = 1;
   let damage = null;
   let logMessage;
 
-  if (attackDidHit) {
-    damage = damageRoll(attackerObj, defenderObj);
-    if (damage > 0) {
-      defenderObj.health = applyDamage(defenderObj, damage);
+  let canPerform = checkFatigue(attackerObj, fatigueCost);
+
+  if (canPerform) {
+    if (attackDidHit) {
+      damage = damageRoll(attackerObj, defenderObj);
+      if (damage > 0) {
+        defenderObj.health = applyDamage(defenderObj, damage);
+      }
+      logMessage = `${attackerObj.name} makes a Basic Attack on ${
+        defenderObj.name
+      } and hits for ${damage} damage!`;
+    } else {
+      logMessage = `${attackerObj.name} makes a Basic Attack on ${
+        defenderObj.name
+      } and misses!`;
     }
-    logMessage = `${attackerObj.name} makes a Basic Attack on ${
-      defenderObj.name
-    } and hits for ${damage} damage!`;
+    decreaseFatigue(attackerObj, fatigueLost);
   } else {
-    logMessage = `${attackerObj.name} makes a Basic Attack on ${
-      defenderObj.name
-    } and misses!`;
+    logMessage = `${
+      attackerObj.name
+    } is too fatigued to perform Basic Attack...`;
   }
 
   logActionResults(logMessage);
@@ -37,24 +48,35 @@ function feignAttack(attacker, defender) {
   const attack1DidHit = attackRoll(attackerObj, defenderObj);
   const attack2DidHit = attackRoll(attackerObj, defenderObj);
   const attackDidHit = attack1DidHit && attack2DidHit;
+  const fatigueCost = 3;
   let damage = null;
   let logMessage;
 
-  if (attackDidHit) {
-    damage = damageRoll(attackerObj, defenderObj);
-    damage = multiplyBy(damage, 2);
-    if (damage > 0) {
-      defenderObj.health = applyDamage(defenderObj, damage);
+  let canPerform = checkFatigue(attackerObj, fatigueCost);
+
+  if (canPerform) {
+    if (attackDidHit) {
+      damage = damageRoll(attackerObj, defenderObj);
+      damage = multiplyBy(damage, 2);
+      if (damage > 0) {
+        defenderObj.health = applyDamage(defenderObj, damage);
+      }
+      logMessage = `${attackerObj.name} makes a Feign Attack on ${
+        defenderObj.name
+      } and hits for ${damage} damage!`;
+    } else {
+      logMessage = `${attackerObj.name} makes a Feign Attack on ${
+        defenderObj.name
+      } and misses!`;
     }
-    logMessage = `${attackerObj.name} makes a Feign Attack on ${
-      defenderObj.name
-    } and hits for ${damage} damage!`;
+    increaseFatigue(attackerObj, fatigueCost);
   } else {
-    logMessage = `${attackerObj.name} makes a Feign Attack on ${
-      defenderObj.name
-    } and misses!`;
+    logMessage = `${
+      attackerObj.name
+    } was too fatigued to perform Feign Attack...`;
+    basicAttack(attacker, defender);
   }
-  console.log('eh?');
+
   logActionResults(logMessage);
   state.setState(gameState);
 }
@@ -67,22 +89,33 @@ function exploitArmorAttack(attacker, defender) {
   const attack1DidHit = attackRoll(attackerObj, defenderObj);
   const attack2DidHit = attackRoll(attackerObj, defenderObj);
   const attackDidHit = attack1DidHit && attack2DidHit;
+  const fatigueCost = 4;
   let damage = null;
   let logMessage;
 
-  if (attackDidHit) {
-    damage = damageRoll(attackerObj, defenderObj, true);
-    damage = multiplyBy(damage, 2);
-    if (damage > 0) {
-      defenderObj.health = applyDamage(defenderObj, damage);
+  let canPerform = checkFatigue(attackerObj, fatigueCost);
+
+  if (canPerform) {
+    if (attackDidHit) {
+      damage = damageRoll(attackerObj, defenderObj, true);
+      damage = multiplyBy(damage, 2);
+      if (damage > 0) {
+        defenderObj.health = applyDamage(defenderObj, damage);
+      }
+      logMessage = `${attackerObj.name} makes a Exploit Armor Attack on ${
+        defenderObj.name
+      } and hits for ${damage} damage!`;
+    } else {
+      logMessage = `${attackerObj.name} makes a Exploit Armor Attack on ${
+        defenderObj.name
+      } and misses!`;
     }
-    logMessage = `${attackerObj.name} makes a Exploit Armor Attack on ${
-      defenderObj.name
-    } and hits for ${damage} damage!`;
+    increaseFatigue(attackerObj, fatigueCost);
   } else {
-    logMessage = `${attackerObj.name} makes a Exploit Armor Attack on ${
-      defenderObj.name
-    } and misses!`;
+    logMessage = `${
+      attackerObj.name
+    } was too fatigued to perform Exploit Armor Attack...`;
+    basicAttack(attacker, defender);
   }
 
   logActionResults(logMessage);
@@ -95,29 +128,40 @@ function bleedAttack(attacker, defender) {
   const attackerObj = gameState[attacker];
   const defenderObj = gameState[defender];
   const attackDidHit = attackRoll(attackerObj, defenderObj);
+  const fatigueCost = 2;
   let damage = null;
   let logMessage;
 
-  if (attackDidHit) {
-    let divisor = 2;
-    let duration = 2;
+  let canPerform = checkFatigue(attackerObj, fatigueCost);
 
-    damage = damageRoll(attackerObj, defenderObj);
-    damage = divideBy(damage, divisor);
+  if (canPerform) {
+    if (attackDidHit) {
+      let divisor = 2;
+      let duration = 2;
 
-    if (damage > 0) {
-      defenderObj.health = applyDamage(defenderObj, damage);
+      damage = damageRoll(attackerObj, defenderObj);
+      damage = divideBy(damage, divisor);
+
+      if (damage > 0) {
+        defenderObj.health = applyDamage(defenderObj, damage);
+      }
+      defenderObj.statusEffects.push(
+        bleedEffectInit(duration, damage, defenderObj, gameTurn)
+      );
+      logMessage = `${attackerObj.name} makes a Bleed Attack on ${
+        defenderObj.name
+      } and hits for ${damage} damage!`;
+    } else {
+      logMessage = `${attackerObj.name} makes a Bleed Attack on ${
+        defenderObj.name
+      } and misses!`;
     }
-    defenderObj.statusEffects.push(
-      bleedEffectInit(duration, damage, defenderObj, gameTurn)
-    );
-    logMessage = `${attackerObj.name} makes a Bleed Attack on ${
-      defenderObj.name
-    } and hits for ${damage} damage!`;
+    increaseFatigue(attackerObj, fatigueCost);
   } else {
-    logMessage = `${attackerObj.name} makes a Bleed Attack on ${
-      defenderObj.name
-    } and misses!`;
+    logMessage = `${
+      attackerObj.name
+    } was too fatigued to perform Bleed Attack...`;
+    basicAttack(attacker, defender);
   }
 
   logActionResults(logMessage);
@@ -145,6 +189,23 @@ function healPotion(target) {
 
 function attackRoll(attacker, defender) {
   return rollOff(attacker.attack, defender.defense);
+}
+
+function checkFatigue(entity, cost) {
+  const totalFatigue = entity.currentFatigue + cost;
+  if (totalFatigue <= entity.fatigueLimit) {
+    return true;
+  } else {
+    false;
+  }
+}
+
+function increaseFatigue(entity, cost) {
+  entity.currentFatigue += cost;
+}
+
+function decreaseFatigue(entity, fatigueLost) {
+  entity.currentFatigue -= fatigueLost;
 }
 
 function damageRoll(attacker, defender, ignoreArmor) {
@@ -181,13 +242,18 @@ function randomEnemyAction(attacker, defender) {
   actions[enemy.actionsAvailable[randomNum]](attacker, defender);
 }
 
+function fatigueRecovery() {
+  console.log('Recovered from some fatigue...');
+}
+
 const actions = {
   basicAttack,
   feignAttack,
   exploitArmorAttack,
   bleedAttack,
   healPotion,
-  enemyActionPhase
+  enemyActionPhase,
+  fatigueRecovery
 };
 
 export default actions;

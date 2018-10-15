@@ -64,8 +64,16 @@ function endGameTurn() {
   state.setState(gameState);
   gameState = state.getState();
   console.log('Game Turn', gameState.gameTurn);
-  console.log(gameState.knight.name, gameState.knight.health);
-  console.log(gameState.enemy.name, gameState.enemy.health);
+  console.log(`
+    ${gameState.knight.name}
+    HP: ${gameState.knight.health}/${gameState.knight.maxHealth}
+    Fatigue: ${gameState.knight.currentFatigue}/${gameState.knight.fatigueLimit}
+  `);
+  console.log(`
+    ${gameState.enemy.name}
+    HP: ${gameState.enemy.health}/${gameState.enemy.maxHealth}
+    Fatigue: ${gameState.enemy.currentFatigue}/${gameState.enemy.fatigueLimit}
+  `);
 }
 
 export { initGame, onResetGameClicked, onActionBtnClicked };

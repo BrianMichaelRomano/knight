@@ -205,7 +205,10 @@ function increaseFatigue(entity, cost) {
 }
 
 function decreaseFatigue(entity, fatigueLost) {
-  entity.currentFatigue -= fatigueLost;
+  const totalFatigue = entity.currentFatigue - fatigueLost;
+  if (!(totalFatigue <= 0)) {
+    entity.currentFatigue -= fatigueLost;
+  }
 }
 
 function damageRoll(attacker, defender, ignoreArmor) {

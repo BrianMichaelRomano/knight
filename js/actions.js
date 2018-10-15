@@ -1,6 +1,6 @@
 import { rollOff, diceRoll, randomNumber } from './dice.js';
 import { divideBy, multiplyBy } from './utils.js';
-import { bleedEffectInit } from './statusEffects.js';
+import { bleedEffectInit, healEffectInit } from './statusEffects.js';
 import state from './state.js';
 import { logActionResults } from './log.js';
 
@@ -10,23 +10,23 @@ function basicAttack(attacker, defender) {
   const defenderObj = gameState[defender];
   const attackDidHit = attackRoll(attackerObj, defenderObj);
   let damage = null;
+  let logMessage;
 
   if (attackDidHit) {
     damage = damageRoll(attackerObj, defenderObj);
     if (damage > 0) {
       defenderObj.health = applyDamage(defenderObj, damage);
     }
+    logMessage = `${attackerObj.name} makes a Basic Attack on ${
+      defenderObj.name
+    } and hits for ${damage} damage!`;
+  } else {
+    logMessage = `${attackerObj.name} makes a Basic Attack on ${
+      defenderObj.name
+    } and misses!`;
   }
 
-  const actionResults = {
-    attackDidHit,
-    attacker: attackerObj,
-    defender: defenderObj,
-    damage,
-    attackType: 'Basic Attack'
-  };
-
-  logActionResults(actionResults);
+  logActionResults(logMessage);
   state.setState(gameState);
 }
 
@@ -38,6 +38,7 @@ function feignAttack(attacker, defender) {
   const attack2DidHit = attackRoll(attackerObj, defenderObj);
   const attackDidHit = attack1DidHit && attack2DidHit;
   let damage = null;
+  let logMessage;
 
   if (attackDidHit) {
     damage = damageRoll(attackerObj, defenderObj);
@@ -45,17 +46,16 @@ function feignAttack(attacker, defender) {
     if (damage > 0) {
       defenderObj.health = applyDamage(defenderObj, damage);
     }
+    logMessage = `${attackerObj.name} makes a Feign Attack on ${
+      defenderObj.name
+    } and hits for ${damage} damage!`;
+  } else {
+    logMessage = `${attackerObj.name} makes a Feign Attack on ${
+      defenderObj.name
+    } and misses!`;
   }
-
-  const actionResults = {
-    attackDidHit,
-    attacker: attackerObj,
-    defender: defenderObj,
-    damage,
-    attackType: 'Feign Attack'
-  };
-
-  logActionResults(actionResults);
+  console.log('eh?');
+  logActionResults(logMessage);
   state.setState(gameState);
 }
 
@@ -68,6 +68,7 @@ function exploitArmorAttack(attacker, defender) {
   const attack2DidHit = attackRoll(attackerObj, defenderObj);
   const attackDidHit = attack1DidHit && attack2DidHit;
   let damage = null;
+  let logMessage;
 
   if (attackDidHit) {
     damage = damageRoll(attackerObj, defenderObj, true);
@@ -75,17 +76,16 @@ function exploitArmorAttack(attacker, defender) {
     if (damage > 0) {
       defenderObj.health = applyDamage(defenderObj, damage);
     }
+    logMessage = `${attackerObj.name} makes a Exploit Armor Attack on ${
+      defenderObj.name
+    } and hits for ${damage} damage!`;
+  } else {
+    logMessage = `${attackerObj.name} makes a Exploit Armor Attack on ${
+      defenderObj.name
+    } and misses!`;
   }
 
-  const actionResults = {
-    attackDidHit,
-    attacker: attackerObj,
-    defender: defenderObj,
-    damage,
-    attackType: 'Exloit Armor Attack'
-  };
-
-  logActionResults(actionResults);
+  logActionResults(logMessage);
   state.setState(gameState);
 }
 
@@ -96,6 +96,7 @@ function bleedAttack(attacker, defender) {
   const defenderObj = gameState[defender];
   const attackDidHit = attackRoll(attackerObj, defenderObj);
   let damage = null;
+  let logMessage;
 
   if (attackDidHit) {
     let divisor = 2;
@@ -107,21 +108,38 @@ function bleedAttack(attacker, defender) {
     if (damage > 0) {
       defenderObj.health = applyDamage(defenderObj, damage);
     }
-
     defenderObj.statusEffects.push(
       bleedEffectInit(duration, damage, defenderObj, gameTurn)
     );
+    logMessage = `${attackerObj.name} makes a Bleed Attack on ${
+      defenderObj.name
+    } and hits for ${damage} damage!`;
+  } else {
+    logMessage = `${attackerObj.name} makes a Bleed Attack on ${
+      defenderObj.name
+    } and misses!`;
   }
 
-  const actionResults = {
-    attackDidHit,
-    attacker: attackerObj,
-    defender: defenderObj,
-    damage,
-    attackType: 'Bleed Attack'
-  };
+  logActionResults(logMessage);
+  state.setState(gameState);
+}
 
-  logActionResults(actionResults);
+function healPotion(target) {
+  const gameState = state.getState();
+  const gameTurn = gameState.gameTurn;
+  const targetObj = gameState[target];
+
+  const healEffect = 10;
+
+  targetObj.health = applyHealing(targetObj, healEffect);
+
+  targetObj.statusEffects.push(
+    healEffectInit(null, healEffect, targetObj, gameTurn)
+  );
+
+  const logMessage = `${targetObj.name} healed for ${healEffect}!`;
+
+  logActionResults(logMessage);
   state.setState(gameState);
 }
 
@@ -147,6 +165,10 @@ function applyDamage(defender, damage) {
   return defender.health - damage;
 }
 
+function applyHealing(target, health) {
+  return target.health + health;
+}
+
 function enemyActionPhase(attacker, defender) {
   randomEnemyAction(attacker, defender);
 }
@@ -164,6 +186,7 @@ const actions = {
   feignAttack,
   exploitArmorAttack,
   bleedAttack,
+  healPotion,
   enemyActionPhase
 };
 

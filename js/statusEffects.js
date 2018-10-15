@@ -7,9 +7,9 @@ const statusEffects = {
   }
 };
 
-function bleedEffectInit(duration, damage, defender, gameTurn) {
+function bleedEffectInit(duration, damage, target, gameTurn) {
   return {
-    target: defender.id,
+    target: target.id,
     name: 'bleed',
     duration,
     damage,
@@ -17,6 +17,21 @@ function bleedEffectInit(duration, damage, defender, gameTurn) {
     isActive: false,
     hasExpired: false,
     recurring: true,
+    reversable: false,
+    reversed: false
+  };
+}
+
+function healEffectInit(duration, damage, target, gameTurn) {
+  return {
+    target: target.id,
+    name: 'heal',
+    duration,
+    damage,
+    gameTurn,
+    isActive: false,
+    hasExpired: true,
+    recurring: false,
     reversable: false,
     reversed: false
   };
@@ -69,4 +84,4 @@ function applyCurrentEffects(effects, entity) {
   return entity;
 }
 
-export { bleedEffectInit, resolveStatusEffects };
+export { bleedEffectInit, healEffectInit, resolveStatusEffects };

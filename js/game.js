@@ -51,8 +51,6 @@ function statusEffectPhase(entity) {
 }
 
 function enemyTurn() {
-  console.log('Enemy Turn...');
-
   actions.enemyActionPhase('enemy', 'knight');
   statusEffectPhase('enemy');
   endGameTurn();
